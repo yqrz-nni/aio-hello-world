@@ -2,7 +2,7 @@ import React from "react";
 import { Provider, defaultTheme, View } from "@adobe/react-spectrum";
 import ErrorBoundary from "react-error-boundary";
 
-import AudienceList from "./screens/AudienceList";
+import AudienceList from "../screens/AudienceList";
 
 export default function App(props) {
   return (
