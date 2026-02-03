@@ -29,7 +29,7 @@ exports.main = async (params) => {
     }
 
     // Optional paging controls per docs (start/limit/sort/etc). :contentReference[oaicite:2]{index=2}
-    const limit = Number(params.limit || 200);
+    const limit = Number(params.limit || 50);
     const start = Number(params.start || 0);
 
     const url =
