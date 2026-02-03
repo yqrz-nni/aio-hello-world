@@ -26,7 +26,7 @@ export default function AudienceList({ ims }) {
 
   const headers = useMemo(() => {
     const h = {};
-    if (ims?.token) h.authorization = `Bearer ${ims.token}`;
+    if (ims?.token) h.authorization = `Bearer ${ims.token}`; // <-- must be lowercase key
     if (ims?.org) h["x-gw-ims-org-id"] = ims.org;
     h["x-sandbox-name"] = sandboxName;
     return h;
@@ -36,22 +36,33 @@ export default function AudienceList({ ims }) {
     setLoading(true);
     setError(null);
 
+    // Diagnostic logs (temporary)
+    console.log("IMS object:", ims);
+    console.log("Has ims.token?:", Boolean(ims?.token));
+    console.log("Action URL:", actions["audiences-list"]);
+    console.log("Headers being sent:", headers);
+
     try {
-      // limit is optional but recommended; we’ll start with 200
+      // Call as GET (cleaner for a list endpoint)
       const resp = await actionWebInvoke(
         actions["audiences-list"],
         headers,
-        { limit: 200 }
+        { limit: 200 },
+        { method: "GET" }
       );
 
-      setAudiences(resp.body.audiences || []);
+      // Robustly handle either response shape:
+      // - { body: { audiences: [...] } } (if your action uses App Builder style)
+      // - { audiences: [...] } (if your action returns body directly)
+      const list = resp?.body?.audiences || resp?.audiences || [];
+      setAudiences(Array.isArray(list) ? list : []);
     } catch (e) {
       setError(e.message || String(e));
       setAudiences([]);
     } finally {
       setLoading(false);
     }
-  }, [headers]);
+  }, [headers, ims]);
 
   useEffect(() => {
     loadAudiences();
@@ -92,7 +103,9 @@ export default function AudienceList({ ims }) {
                 <Cell>{a.name || "(no name)"}</Cell>
                 <Cell>{a.namespace || ""}</Cell>
                 <Cell>{a.lifecycleState || ""}</Cell>
-                <Cell>{a.updateTime ? new Date(a.updateTime).toLocaleString() : ""}</Cell>
+                <Cell>
+                  {a.updateTime ? new Date(a.updateTime).toLocaleString() : ""}
+                </Cell>
                 <Cell style={{ fontFamily: "monospace" }}>{a.id}</Cell>
               </Row>
             ))}
@@ -100,9 +113,7 @@ export default function AudienceList({ ims }) {
         </TableView>
       </View>
 
-      <Text marginTop="size-200">
-        Showing {audiences.length} audiences.
-      </Text>
+      <Text marginTop="size-200">Showing {audiences.length} audiences.</Text>
     </View>
   );
 }
