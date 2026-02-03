@@ -18,3 +18,13 @@ runtimeManifest:
           annotations:
             require-adobe-auth: true
             final: true
+        audiences-list:
+          function: actions/audiences-list/index.js
+          web: 'yes'
+          runtime: nodejs:22
+          inputs:
+            LOG_LEVEL: debug
+            AEP_API_KEY: $AEP_API_KEY
+          annotations:
+            require-adobe-auth: true
+            final: true
