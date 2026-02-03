@@ -47,7 +47,7 @@ export default function AudienceList({ ims }) {
       const resp = await actionWebInvoke(
         actions["audiences-list"],
         headers,
-        { limit: 200 },
+        { limit: 50 },
         { method: "GET" }
       );
 
