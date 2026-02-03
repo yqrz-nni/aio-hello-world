@@ -22,7 +22,7 @@ export default function AudienceList({ ims }) {
   const [audiences, setAudiences] = useState([]);
 
   // Hardcode for now (later: make this a UI setting)
-  const sandboxName = "YOUR_SANDBOX_NAME";
+  const sandboxName = "nni-sti";
 
   const headers = useMemo(() => {
     const h = {};
